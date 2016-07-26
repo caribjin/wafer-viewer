@@ -1,0 +1,149 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "jquery": true
+  },
+
+  "plugins": [
+    "react"
+  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "blockBindings": false,
+      "forOf": false,
+      "jsx": true,
+      "spread": false
+    }
+  },
+  "rules": {
+    "eqeqeq": 0,
+    "no-undef":0,
+    "no-alert":2,
+    "no-with":2,
+    "no-proto":2,
+    "no-multi-spaces":0,
+    "no-iterator":2,
+    "no-eval":2,
+    "no-invalid-this":2,
+    "no-empty":2,
+    "no-continue":2,
+    "no-spaced-func":2,
+    "no-nested-ternary":2,
+    "no-unused-vars": [
+      2,
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "quote-props": [2, "as-needed"],
+    "comma-dangle":[2,"never"],
+    "no-console":[2, { "allow": ["log","warn", "error","info","debug"] }],
+    "valid-jsdoc": [2,{
+      "requireParamDescription": true,
+      "requireReturn": false,
+      "requireReturnDescription": true,
+      "requireReturnType": true
+    }],
+    "quotes": ["error", "single"],
+    "semi": 2,
+    "jsx-quotes": [2, "prefer-double"],
+    "react/jsx-no-duplicate-props":2,
+    "react/display-name":2,
+    "react/no-deprecated":2,
+    "react/no-did-update-set-state":2,
+    "react/no-did-mount-set-state":2,
+    "react/jsx-handler-names": [1, {
+      "eventHandlerPrefix": "handle",
+      "eventHandlerPropPrefix": "on"
+    }],
+    "react/jsx-indent-props": [
+      2,
+      2
+    ],
+    "react/prop-types": [
+      0
+    ],
+    "react/jsx-closing-bracket-location": [
+      1,
+      {
+        "selfClosing": "props-aligned",
+        "nonEmpty": "after-props"
+      }
+    ],
+    "react/jsx-space-before-closing": [
+      2,
+      "always"
+    ],
+    "react/sort-comp": [
+      2,
+      {
+        "order": [
+          "static-methods",
+          "lifecycle",
+          "/^observeData.+$/",
+          "/^handle.+$/",
+          "/^(get|set)(?!(InitialState$|DefaultProps$|ChildContext$)).+$/",
+          "everything-else",
+          "/^render.+$/",
+          "render"
+        ],
+        "groups": {
+          "lifecycle": [
+            "displayName",
+            "mixins",
+            "propTypes",
+            "contextTypes",
+            "childContextTypes",
+            "statics",
+            "defaultProps",
+            "constructor",
+            "getDefaultProps",
+            "getInitialState",
+            "state",
+            "getChildContext",
+            "componentWillMount",
+            "componentDidMount",
+            "componentWillReceiveProps",
+            "shouldComponentUpdate",
+            "componentWillUpdate",
+            "componentDidUpdate",
+            "componentWillUnmount"
+          ]
+        }
+      }
+    ],
+    "react/jsx-uses-vars": 2,
+    "react/jsx-no-undef": 2,
+    "react/jsx-no-bind": [
+      2,
+      {
+        "ignoreRefs": true,
+        "allowArrowFunctions": true,
+        "allowBind": false
+      }
+    ],
+    "react/jsx-boolean-value": [
+      2,
+      "always"
+    ],
+    "react/jsx-uses-react": [
+      2,
+      {
+        "pragma": "React"
+      }
+    ]
+
+  },
+  "globals" :{
+    "module" : true,
+    "exports" : true,
+    "props" : true,
+    "jQuery" : true,
+    "React" : true,
+    "ReactDOM" : true,
+    "Nux" : true,
+    "n" : true
+  }
+}
