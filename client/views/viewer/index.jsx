@@ -30,12 +30,12 @@ module.exports = React.createClass({
 			var handleRotateLeft = function() {
 				var currentRotation = view.getRotation();
 				var rotateLeft = ol.animation.rotate({
-					anchor: [0, 0],
+					anchor: [-1721973, 2309009],
 					duration: 500,
 					rotation: currentRotation
 				});
 				self.map.beforeRender(rotateLeft);
-				view.rotate(currentRotation + (Math.PI / 2), [0, 0]);
+				view.rotate(currentRotation + (Math.PI / 2), [-1721973, 2309009]);
 			};
 
 			button.addEventListener('click', handleRotateLeft, false);
@@ -62,12 +62,12 @@ module.exports = React.createClass({
 			var handleRotateLeft = function() {
 				var currentRotation = view.getRotation();
 				var rotateRight = ol.animation.rotate({
-					anchor: [0, 0],
+					anchor: [-1721973, 2309009],
 					duration: 500,
 					rotation: currentRotation
 				});
 				self.map.beforeRender(rotateRight);
-				view.rotate(currentRotation - (Math.PI / 2), [0, 0]);
+				view.rotate(currentRotation - (Math.PI / 2), [-1721973, 2309009]);
 			};
 
 			button.addEventListener('click', handleRotateLeft, false);
