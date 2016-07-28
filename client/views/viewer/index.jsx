@@ -1,100 +1,34 @@
+import Controls from './controls';
 
 module.exports = React.createClass({
 	map: null,
+	view: null,
 	waferLayers: [],
 	options: {
 		waferCount: 1,
 		initZoomLevel: 1,
-		initCenterPosition: [-1721973, 2309009],
+		initCenterPosition: [-1800244.890, 1995923.682],
 		zoomLevelCount: 17,
 		showDebugTileGrid: false,
 		tileUrl: 'http://172.16.20.202:30000/rest/tile/{z}/{x}/{y}',
 		tileEmptyUrl: ''
 	},
 
-	getInitialState: function() {
+	getInitialState() {
 		return {};
 	},
 
-	componentDidMount: function() {
-		window.app = {};
-		var app = window.app;
-		var self = this;
+	componentDidMount() {
+		let self = this;
 
-		app.RotateClockwiseControl = function(opt) {
-			var options = opt || {};
-
-			var button = document.createElement('button');
-			button.innerHTML = '<i class="icon rotate-right" />';
-
-			var handleRotateLeft = function() {
-				var currentRotation = view.getRotation();
-				var rotateLeft = ol.animation.rotate({
-					anchor: [-1721973, 2309009],
-					duration: 500,
-					rotation: currentRotation
-				});
-				self.map.beforeRender(rotateLeft);
-				view.rotate(currentRotation + (Math.PI / 2), [-1721973, 2309009]);
-			};
-
-			button.addEventListener('click', handleRotateLeft, false);
-			button.addEventListener('touchstart', handleRotateLeft, false);
-
-			var element = document.createElement('div');
-			element.className = 'rotate-clockwise ol-unselectable ol-control';
-			element.title = 'Rotate ClockWise';
-			element.appendChild(button);
-
-			ol.control.Control.call(this, {
-				element: element,
-				target: options.target
-			});
-		};
-		ol.inherits(app.RotateClockwiseControl, ol.control.Control);
-
-		app.RotateCounterClockwiseControl = function(opt) {
-			var options = opt || {};
-
-			var button = document.createElement('button');
-			button.innerHTML = '<i class="icon rotate-left" />';
-
-			var handleRotateLeft = function() {
-				var currentRotation = view.getRotation();
-				var rotateRight = ol.animation.rotate({
-					anchor: [-1721973, 2309009],
-					duration: 500,
-					rotation: currentRotation
-				});
-				self.map.beforeRender(rotateRight);
-				view.rotate(currentRotation - (Math.PI / 2), [-1721973, 2309009]);
-			};
-
-			button.addEventListener('click', handleRotateLeft, false);
-			button.addEventListener('touchstart', handleRotateLeft, false);
-
-			var element = document.createElement('div');
-			element.className = 'rotate-counterclockwise ol-unselectable ol-control';
-			element.title = 'Rotate Counter ClockWise';
-			element.appendChild(button);
-
-			ol.control.Control.call(this, {
-				element: element,
-				target: options.target
-			});
-		};
-		ol.inherits(app.RotateCounterClockwiseControl, ol.control.Control);
-
-		var view = new ol.View({
-			// center: ol.proj.fromLonLat([0, 0]),
-			// center: [-7514065.031381681,  10018752.0813963],
+		this.view = new ol.View({
 			center: this.options.initCenterPosition,
 			zoom: this.options.initZoomLevel,
 			minZoom: this.options.initZoomLevel,
 			maxZoom: this.options.initZoomLevel + this.options.zoomLevelCount - 1
 		});
 
-		var viewOverviewMap = new ol.View({
+		let viewOverviewMap = new ol.View({
 			center: this.options.initCenterPosition,
 			zoom: 0,
 			minZoom: 0,
@@ -102,13 +36,13 @@ module.exports = React.createClass({
 		});
 
 		// background base tile
-		var baseTileSource = new ol.source.OSM({ url: this.options.tileEmptyUrl });
-		var baseLayer = new ol.layer.Tile({
+		let baseTileSource = new ol.source.OSM({ url: this.options.tileEmptyUrl });
+		let baseLayer = new ol.layer.Tile({
 			source: baseTileSource
 		});
 
 		// debug tile grid
-		var tileGridLayer = new ol.layer.Tile({
+		let tileGridLayer = new ol.layer.Tile({
 			source: new ol.source.TileDebug({
 				projection: 'EPSG:3857',
 				tileGrid: baseTileSource.getTileGrid()
@@ -116,7 +50,7 @@ module.exports = React.createClass({
 		});
 
 		// wafer tile source
-		var waferTileSource = new ol.source.OSM({
+		let waferTileSource = new ol.source.OSM({
 			url: this.options.tileUrl,
 			wrapDateLine: false,
 			wrapX: false,
@@ -130,18 +64,18 @@ module.exports = React.createClass({
 		});
 
 		// create and add wafer layers
-		for (var i = 0; i < this.options.waferCount; i++) {
-			var layer = new ol.layer.Tile({
+		for (let i = 0; i < this.options.waferCount; i++) {
+			let layer = new ol.layer.Tile({
 				source: waferTileSource
 			});
 			this.waferLayers.push(layer);
 		}
 
-		var waferLayerGroup = new ol.layer.Group({
+		let waferLayerGroup = new ol.layer.Group({
 			layers: this.waferLayers
 		});
 
-		var mapLayers = [
+		let mapLayers = [
 			baseLayer,
 			waferLayerGroup
 		];
@@ -161,15 +95,17 @@ module.exports = React.createClass({
 				}),
 				new ol.control.ZoomSlider(),
 				new ol.control.ZoomToExtent()
-			]).extend([
-				new app.RotateClockwiseControl(),
-				new app.RotateCounterClockwiseControl()
 			]),
 			crossOrigin: 'anonymous',
 			target: 'map',
 			renderer: 'canvas',
-			view: view
+			view: this.view
 		});
+
+		let cRotateControl = new Controls.RotateClockwiseControl(this.map, this.view, {center: this.options.initCenterPosition});
+		let ccRotateControl = new Controls.RotateCounterClockwiseControl(this.map, this.view, {center: this.options.initCenterPosition});
+		this.map.addControl(cRotateControl);
+		this.map.addControl(ccRotateControl);
 
 		function main() {
 			generateLayerControler();
@@ -193,15 +129,15 @@ module.exports = React.createClass({
 		}
 
 		function generateLayerControler() {
-			var $layerTree = $('.layer-tree');
+			let $layerTree = $('.layer-tree');
 
 			self.map.getLayers().forEach(function(layer, i) {
 				if (layer instanceof ol.layer.Group) {
 					layer.getLayers().forEach(function(subLayer, j) {
-						var $li = $('<li>');
-						var $label = $('<label>');
-						var $checkbox = $('<input type="checkbox" class="visible">');
-						var $slider = $('<input type="range" class="opacity" min="0" max="1" step="0.1">');
+						let $li = $('<li>');
+						let $label = $('<label>');
+						let $checkbox = $('<input type="checkbox" class="visible">');
+						let $slider = $('<input type="range" class="opacity" min="0" max="1" step="0.1">');
 
 						bindInput($checkbox, $slider, subLayer);
 
@@ -216,7 +152,7 @@ module.exports = React.createClass({
 		main();
 	},
 
-	render: function() {
+	render() {
 		return (
 			<div>
 					<div id="map" className="map"></div>
