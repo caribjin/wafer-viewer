@@ -94,6 +94,13 @@ module.exports = React.createClass({
 			maxZoom: this.options.initZoomLevel + this.options.zoomLevelCount - 1
 		});
 
+		var viewOverviewMap = new ol.View({
+			center: this.options.initCenterPosition,
+			zoom: 0,
+			minZoom: 0,
+			maxZoom: 0
+		});
+
 		// background base tile
 		var baseTileSource = new ol.source.OSM({ url: this.options.tileEmptyUrl });
 		var baseLayer = new ol.layer.Tile({
@@ -114,6 +121,12 @@ module.exports = React.createClass({
 			wrapDateLine: false,
 			wrapX: false,
 			noWrap: true
+		});
+
+		let overviewMapControl = new ol.control.OverviewMap({
+			className: 'ol-overviewmap ol-custom-overviewmap',
+			collapsed: false,
+			view: viewOverviewMap
 		});
 
 		// create and add wafer layers
@@ -142,9 +155,7 @@ module.exports = React.createClass({
 			controls: ol.control.defaults().extend([
 				// new ol.control.FullScreen(),
 				new ol.control.MousePosition(),
-				new ol.control.OverviewMap({
-					collapsed: false
-				}),
+				overviewMapControl,
 				new ol.control.Rotate({
 					autoHide: false
 				}),
