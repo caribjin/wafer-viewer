@@ -1,4 +1,6 @@
-import Controls from './controls';
+import Map from '../../libs/Map';
+import View from '../../libs/View';
+import Controls from '../../libs/Controls';
 
 module.exports = React.createClass({
 	map: null,
@@ -21,19 +23,14 @@ module.exports = React.createClass({
 	componentDidMount() {
 		let self = this;
 
-		this.view = new ol.View({
-			center: this.options.initCenterPosition,
-			zoom: this.options.initZoomLevel,
-			minZoom: this.options.initZoomLevel,
-			maxZoom: this.options.initZoomLevel + this.options.zoomLevelCount - 1
-		});
+		this.view = new View(
+			this.options.initCenterPosition,
+			this.options.initZoomLevel,
+			this.options.initZoomLevel,
+			this.options.initZoomLevel + this.options.zoomLevelCount - 1
+		).instance;
 
-		let viewOverviewMap = new ol.View({
-			center: this.options.initCenterPosition,
-			zoom: 0,
-			minZoom: 0,
-			maxZoom: 0
-		});
+		let viewOverviewMap = new View(this.options.initCenterPosition, 0, 0, 0).instance;
 
 		// background base tile
 		let baseTileSource = new ol.source.OSM({ url: this.options.tileEmptyUrl });
@@ -57,11 +54,8 @@ module.exports = React.createClass({
 			noWrap: true
 		});
 
-		let overviewMapControl = new ol.control.OverviewMap({
-			className: 'ol-overviewmap ol-custom-overviewmap',
-			collapsed: false,
-			view: viewOverviewMap
-		});
+		let overviewMapControl = new Controls.OverviewMapControl();
+		// overviewMapControl.view = viewOverviewMap;
 
 		// create and add wafer layers
 		for (let i = 0; i < this.options.waferCount; i++) {
@@ -84,33 +78,25 @@ module.exports = React.createClass({
 			mapLayers.push(tileGridLayer);
 		}
 
-		this.map = new ol.Map({
-			layers: mapLayers,
-			controls: ol.control.defaults().extend([
-				// new ol.control.FullScreen(),
+		this.map = new Map(
+			'map',
+			mapLayers,
+			ol.control.defaults().extend([
 				new ol.control.MousePosition(),
-				overviewMapControl,
+				// overviewMapControl,
 				new ol.control.Rotate({
 					autoHide: false
 				}),
 				new ol.control.ZoomSlider(),
 				new ol.control.ZoomToExtent()
 			]),
-			crossOrigin: 'anonymous',
-			target: 'map',
-			renderer: 'canvas',
-			view: this.view
-		});
+			this.view
+		).instance;
 
 		let cRotateControl = new Controls.RotateClockwiseControl(this.map, this.view, {center: this.options.initCenterPosition});
 		let ccRotateControl = new Controls.RotateCounterClockwiseControl(this.map, this.view, {center: this.options.initCenterPosition});
 		this.map.addControl(cRotateControl);
 		this.map.addControl(ccRotateControl);
-
-		function main() {
-			generateLayerControler();
-			//rotateLayer(0);
-		}
 
 		function bindInput($visibleElement, $opacityElement, layer) {
 			$visibleElement.on('change', function() {
@@ -124,12 +110,11 @@ module.exports = React.createClass({
 			$opacityElement.val(String(layer.getOpacity()));
 		}
 
-		function pad(number, digits) {
-			return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
-		}
-
 		function generateLayerControler() {
 			let $layerTree = $('.layer-tree');
+			let pad = (number, digits) => {
+				return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+			};
 
 			self.map.getLayers().forEach(function(layer, i) {
 				if (layer instanceof ol.layer.Group) {
@@ -149,7 +134,7 @@ module.exports = React.createClass({
 			});
 		}
 
-		main();
+		generateLayerControler();
 	},
 
 	render() {
