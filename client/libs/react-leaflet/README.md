@@ -26,10 +26,10 @@ React, ReactDOM and Leaflet are peer dependencies, if you haven't already instal
 npm install leaflet react react-dom react-leaflet
 ```
 
-An UMD build is also available on [npmcdn](https://npmcdn.com/):
+An UMD build is also available on [unpkg](https://unpkg.com/):
 
 ```html
-<script src="https://npmcdn.com/react-leaflet/dist/react-leaflet.min.js"></script>
+<script src="https://unpkg.com/react-leaflet/dist/react-leaflet.min.js"></script>
 ```
 
 The library is injected as `window.ReactLeaflet`.
